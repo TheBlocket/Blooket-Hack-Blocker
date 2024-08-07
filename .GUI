@@ -1,22 +1,36 @@
 // Create the HTML structure
-const topLeftCorner = document.createElement('div');
-topLeftCorner.id = 'top-left-corner';
-topLeftCorner.className = 'control-panel';
-topLeftCorner.innerHTML = `
+const createPanel = (id, className, content) => {
+    const panel = document.createElement('div');
+    panel.id = id;
+    panel.className = className;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, 'text/html');
+    while (doc.body.firstChild) {
+        panel.appendChild(doc.body.firstChild);
+    }
+    return panel;
+};
+
+const topLeftCorner = createPanel(
+    'top-left-corner',
+    'control-panel',
+    `
     <h2>Anti-Cheat</h2>
     <div id="actions">
         <button onclick="refreshUserList()">Refresh</button>
         <button onclick="blockSelectedUsers()">Block Users</button>
     </div>
-`;
+`
+);
 
-const topRightCorner = document.createElement('div');
-topRightCorner.id = 'top-right-corner';
-topRightCorner.className = 'control-panel';
-topRightCorner.innerHTML = `
+const topRightCorner = createPanel(
+    'top-right-corner',
+    'control-panel',
+    `
     <h2>Active Users</h2>
     <ul id="users"></ul>
-`;
+`
+);
 
 // Append the panels to the body
 document.body.appendChild(topLeftCorner);
