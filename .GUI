@@ -1,0 +1,142 @@
+// Create the HTML structure
+const topLeftCorner = document.createElement('div');
+topLeftCorner.id = 'top-left-corner';
+topLeftCorner.className = 'control-panel';
+topLeftCorner.innerHTML = `
+    <h2>Anti-Cheat</h2>
+    <div id="actions">
+        <button onclick="refreshUserList()">Refresh</button>
+        <button onclick="blockSelectedUsers()">Block Users</button>
+    </div>
+`;
+
+const topRightCorner = document.createElement('div');
+topRightCorner.id = 'top-right-corner';
+topRightCorner.className = 'control-panel';
+topRightCorner.innerHTML = `
+    <h2>Active Users</h2>
+    <ul id="users"></ul>
+`;
+
+// Append the panels to the body
+document.body.appendChild(topLeftCorner);
+document.body.appendChild(topRightCorner);
+
+// Add CSS styles
+const styles = `
+body {
+    font-family: Arial, sans-serif;
+}
+
+.control-panel {
+    position: fixed;
+    top: 10px;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    z-index: 1000;
+}
+
+#top-left-corner {
+    left: 10px;
+}
+
+#top-right-corner {
+    right: 10px;
+}
+
+.control-panel h2 {
+    margin: 0 0 10px;
+    text-align: center;
+}
+
+#users {
+    list-style: none;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#users li {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#actions button {
+    width: 100%;
+    padding: 5px;
+    border: none;
+    background-color: #007BFF;
+    color: #fff;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#actions button:hover {
+    background-color: #0056b3;
+}
+`;
+
+const styleSheet = document.createElement('style');
+styleSheet.type = 'text/css';
+styleSheet.innerText = styles;
+document.head.appendChild(styleSheet);
+
+// Sample user data
+const users = [
+    { id: 1, name: 'User1', isCheating: false },
+    { id: 2, name: 'User2', isCheating: true },
+    { id: 3, name: 'User3', isCheating: false },
+    { id: 4, name: 'User4', isCheating: true }
+];
+
+// Function to render user list
+function renderUserList() {
+    const userList = document.getElementById('users');
+    userList.innerHTML = '';
+    users.forEach(user => {
+        const userItem = document.createElement('li');
+        userItem.innerHTML = `
+            <span>${user.name}</span>
+            <input type="checkbox" data-user-id="${user.id}" ${user.isCheating ? 'checked' : ''}>
+        `;
+        userList.appendChild(userItem);
+    });
+}
+
+// Function to refresh user list
+function refreshUserList() {
+    renderUserList();
+}
+
+// Function to block selected users
+function blockSelectedUsers() {
+    const checkboxes = document.querySelectorAll('#users input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            const userId = parseInt(checkbox.getAttribute('data-user-id'), 10);
+            const user = users.find(user => user.id === userId);
+            if (user) {
+                user.isCheating = true;
+                console.log(`Blocked user: ${user.name}`);
+            }
+        }
+    });
+    renderUserList();
+}
+
+// Initial render
+document.addEventListener('DOMContentLoaded', () => {
+    renderUserList();
+});
+
+// Immediate render for when the script is pasted
+renderUserList();
